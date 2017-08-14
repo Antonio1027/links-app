@@ -6,15 +6,26 @@ const {graphqlExpress, graphiqlExpress} = require('apollo-server-express');
 
 const schema =  require('./schema');
 
-var app = express();
+const connectMongo = require('./mongo-connector');
 
-app.use('/graphql', bodyParser.json(), graphqlExpress({schema}));
+const start = async () => {
+	const mongo = await connectMongo();
 
-app.use('/graphiql', graphiqlExpress({
-	endpointURL: '/graphql'
-}));
+	var app = express();
 
-const PORT = 3000;
-app.listen(PORT, () => {
-	console.log(`Hackernews GraphQL server running on port ${PORT}.`);
-});
+	app.use('/graphql', bodyParser.json(), graphqlExpress({
+		context: {mongo},
+		schema
+	}));
+
+	app.use('/graphiql', graphiqlExpress({
+		endpointURL: '/graphql'
+	}));
+
+	const PORT = 3000;
+	app.listen(PORT, () => {
+		console.log(`Hackernews GraphQL server running on port ${PORT}.`);
+	});
+};
+
+start();
