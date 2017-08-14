@@ -7,14 +7,16 @@ const {graphqlExpress, graphiqlExpress} = require('apollo-server-express');
 const schema =  require('./schema');
 
 const connectMongo = require('./mongo-connector');
+const connectMongoUser = require('./mongo-connector-user');
 
 const start = async () => {
 	const mongo = await connectMongo();
+	const users = await connectMongoUser();
 
 	var app = express();
 
 	app.use('/graphql', bodyParser.json(), graphqlExpress({
-		context: {mongo},
+		context: {mongo,users},
 		schema
 	}));
 
