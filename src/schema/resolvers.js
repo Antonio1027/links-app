@@ -19,7 +19,7 @@ module.exports = {
 				password: data.authProvider.email.password,
 			};
 			const response = await Users.insert(newUser);
-			return Object.assign({id: response.insertIds[0]}, newUser);
+			return Object.assign({id: response.insertedIds[0]}, newUser);
 		}
 	},
 	Link: {
